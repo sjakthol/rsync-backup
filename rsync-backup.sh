@@ -61,7 +61,7 @@ if [ -f "$STATE_FILE" ]; then
 fi
 
 # The new identifier is the current ISO-8601 timestamp
-NEW_ID=$(date +%Y-%m-%dT%H:%M:%SZ%:z)
+NEW_ID=$(date --iso-8601=seconds)
 
 # The target for new backup
 BACKUP_TARGET="$TARGET_DIR/$NEW_ID/"
