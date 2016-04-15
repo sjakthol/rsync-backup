@@ -60,6 +60,18 @@ if [ -f "$STATE_FILE" ]; then
   PREV_ID=$(cat "$STATE_FILE")
 fi
 
+# Check if any files have changed since last invocation
+if [ -n "$PREV_ID" ]; then
+  # For some reason find cannot parse ISO 8601 timestamps with the time
+  # zone information. Therefore, turn it into a unix timestamp first
+  TIMESTAMP="$(date -d $PREV_ID +%s)"
+  CHANGES=$(find "$DIR_TO_BACKUP" -newermt "@$TIMESTAMP" )
+  if [ "$CHANGES" = "" ]; then
+    echo "No files have changed since $PREV_ID; skipping backup"
+    exit 0
+  fi
+fi
+
 # The new identifier is the current ISO-8601 timestamp
 NEW_ID=$(date --iso-8601=seconds)
 
